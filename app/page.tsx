@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { AnnualComparisonTable } from "../components/AnnualComparisonTable";
 import { LineChart } from "../components/LineChart";
+import { MetricExplorer } from "../components/MetricExplorer";
 import { MonthlyBars } from "../components/MonthlyBars";
 import { SpreadBars } from "../components/SpreadBars";
 import sampleData from "../public/data/sample-insights.json";
@@ -176,6 +177,36 @@ export default async function HomePage() {
   const recentRecords = [...(siteData.recentRecords ?? [])].reverse();
   const marketStructure = siteData.marketStructure ?? [];
   const annualComparison = siteData.annualComparison ?? [];
+  const explorerOptions = [
+    {
+      id: "broiler-large",
+      label: "白肉雞 2.0Kg+",
+      description: "觀察近期白肉雞大規格價格變動，適合快速抓住供需是否轉向。",
+      color: "#cc5a2f",
+      data: siteData.series.broilerLarge,
+    },
+    {
+      id: "egg-wholesale",
+      label: "雞蛋大運輸價",
+      description: "聚焦雞蛋流通端價格，通常比產地價更能反映通路端的變化。",
+      color: "#257179",
+      data: siteData.series.eggWholesale,
+    },
+    {
+      id: "broiler-spread",
+      label: "白肉雞規格價差",
+      description: "比較白肉雞大規格與中規格的差距，觀察是否出現規格偏好。",
+      color: "#b24a21",
+      data: siteData.series.broilerSpread ?? [],
+    },
+    {
+      id: "egg-spread",
+      label: "雞蛋上下游價差",
+      description: "把產地價與大運輸價的差距單獨拉出來，觀察價格傳導是否放大。",
+      color: "#1a6d73",
+      data: siteData.series.eggSpread ?? [],
+    },
+  ];
 
   return (
     <main className="page-shell">
@@ -258,13 +289,13 @@ export default async function HomePage() {
           <LineChart
             title="White Broiler"
             subtitle="白肉雞 2.0Kg 以上走勢"
-            color="#cc5a2f"
+            color="#1a73e8"
             data={siteData.series.broilerLarge}
           />
           <LineChart
             title="Egg Logistics"
             subtitle="雞蛋大運輸價走勢"
-            color="#257179"
+            color="#34a853"
             data={siteData.series.eggWholesale}
           />
           <SpreadBars
@@ -273,6 +304,21 @@ export default async function HomePage() {
             items={siteData.spreads}
           />
         </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading">
+          <p className="eyebrow">Interactive Explorer</p>
+          <h2>把不同指標放進同一個分析視窗，切換起來會更像真的資料產品</h2>
+          <p className="section-copy">
+            這裡可以切換看近期四種核心指標，不用來回跳不同區塊，能更快比較哪一種訊號正在變化。
+          </p>
+        </div>
+        <MetricExplorer
+          title="Metric Explorer"
+          subtitle="近期指標切換分析"
+          options={explorerOptions}
+        />
       </section>
 
       <section className="section section--alt">
@@ -287,13 +333,13 @@ export default async function HomePage() {
           <LineChart
             title="Broiler Spread"
             subtitle="白肉雞大規格與中規格價差"
-            color="#cc5a2f"
+            color="#4285f4"
             data={siteData.series.broilerSpread ?? []}
           />
           <LineChart
             title="Egg Spread"
             subtitle="雞蛋產地價與大運輸價價差"
-            color="#257179"
+            color="#0f9d58"
             data={siteData.series.eggSpread ?? []}
           />
           <div className="story-grid story-grid--full">
