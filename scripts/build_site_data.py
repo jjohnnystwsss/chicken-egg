@@ -62,6 +62,34 @@ def average_or_zero(values: list[float]) -> float:
     return round(mean(values), 2) if values else 0.0
 
 
+def month_average(cleaned: list[dict[str, Any]], key: str) -> list[dict[str, Any]]:
+    buckets: dict[int, list[float]] = {month: [] for month in range(1, 13)}
+    for item in cleaned:
+      value = item.get(key)
+      if value is None:
+        continue
+      buckets[item["date"].month].append(value)
+
+    return [
+      {
+        "label": f"{month:02d} 月",
+        "value": average_or_zero(buckets[month]),
+      }
+      for month in range(1, 13)
+    ]
+
+
+def find_peak(items: list[dict[str, Any]]) -> dict[str, Any]:
+    return max(items, key=lambda item: item["value"]) if items else {"label": "-", "value": 0.0}
+
+
+def find_trough(items: list[dict[str, Any]]) -> dict[str, Any]:
+    positives = [item for item in items if item["value"] > 0]
+    if not positives:
+      return {"label": "-", "value": 0.0}
+    return min(positives, key=lambda item: item["value"])
+
+
 def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
     cleaned = []
     for record in records:
@@ -137,6 +165,12 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
       for item in recent
       if item["eggWholesale"] is not None and item["eggFarm"] is not None
     ]
+    broiler_monthly = month_average(cleaned, "broilerLarge")
+    egg_monthly = month_average(cleaned, "eggWholesale")
+    broiler_peak = find_peak(broiler_monthly)
+    broiler_trough = find_trough(broiler_monthly)
+    egg_peak = find_peak(egg_monthly)
+    egg_trough = find_trough(egg_monthly)
 
     payload = {
       "meta": {
@@ -197,6 +231,24 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
         {
           "label": "雞蛋大運輸價近 7 日移動平均",
           "value": moving_average(egg_wholesale_values, 7)[-1] if egg_wholesale_values else 0.0,
+        },
+      ],
+      "seasonality": {
+        "broilerLargeMonthly": broiler_monthly,
+        "eggWholesaleMonthly": egg_monthly,
+      },
+      "highlights": [
+        {
+          "title": "白肉雞季節高點",
+          "body": f"長期平均來看，白肉雞 2.0Kg 以上在 {broiler_peak['label']} 的平均價格最高，約 {broiler_peak['value']:.1f} 元/台斤。",
+        },
+        {
+          "title": "雞蛋季節低點",
+          "body": f"雞蛋大運輸價的月平均低點落在 {egg_trough['label']}，約 {egg_trough['value']:.1f} 元/台斤，可和供需淡旺季一起解讀。",
+        },
+        {
+          "title": "全年波動對照",
+          "body": f"白肉雞月均價高低差約 {broiler_peak['value'] - broiler_trough['value']:.1f} 元/台斤，雞蛋大運輸價高低差約 {egg_peak['value'] - egg_trough['value']:.1f} 元/台斤。",
         },
       ],
       "insights": [

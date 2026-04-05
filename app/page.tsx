@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { LineChart } from "../components/LineChart";
+import { MonthlyBars } from "../components/MonthlyBars";
 import { SpreadBars } from "../components/SpreadBars";
 import sampleData from "../public/data/sample-insights.json";
 
@@ -30,9 +31,23 @@ type SiteData = {
     title: string;
     body: string;
   }[];
+  highlights?: {
+    title: string;
+    body: string;
+  }[];
   series: {
     broilerLarge: ChartPoint[];
     eggWholesale: ChartPoint[];
+  };
+  seasonality?: {
+    broilerLargeMonthly: {
+      label: string;
+      value: number;
+    }[];
+    eggWholesaleMonthly: {
+      label: string;
+      value: number;
+    }[];
   };
   spreads: {
     label: string;
@@ -101,6 +116,7 @@ async function getSiteData(): Promise<SiteData> {
 export default async function HomePage() {
   const siteData = await getSiteData();
   const insightCards = siteData.insights?.length ? siteData.insights : fallbackInsightCards;
+  const highlightCards = siteData.highlights?.length ? siteData.highlights : fallbackInsightCards;
   const broilerTrend = getTrendSummary(siteData.series.broilerLarge);
   const eggTrend = getTrendSummary(siteData.series.eggWholesale);
   const snapshotCards = [
@@ -246,6 +262,38 @@ export default async function HomePage() {
               能往月平均、節慶前後比較、異常波動區間與歷年重疊走勢繼續擴寫。
             </p>
           </article>
+        </div>
+      </section>
+
+      <section className="section" id="seasonality">
+        <div className="section-heading">
+          <p className="eyebrow">Seasonality Preview</p>
+          <h2>再往前一步看，這份資料其實已經能讀出月份節奏</h2>
+          <p className="section-copy">
+            下面這組月平均不是只看最近幾天，而是把歷年資料按月份重新整理，作為第二版的季節性預覽。
+          </p>
+        </div>
+        <div className="charts-grid">
+          <MonthlyBars
+            title="Monthly Pattern"
+            subtitle="白肉雞 2.0Kg 以上月平均"
+            colorClassName="month-bars__fill--warm"
+            items={siteData.seasonality?.broilerLargeMonthly ?? []}
+          />
+          <MonthlyBars
+            title="Monthly Pattern"
+            subtitle="雞蛋大運輸價月平均"
+            colorClassName="month-bars__fill--cool"
+            items={siteData.seasonality?.eggWholesaleMonthly ?? []}
+          />
+          <div className="story-grid story-grid--full">
+            {highlightCards.map((item) => (
+              <article key={item.title} className="story-card">
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

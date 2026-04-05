@@ -4,7 +4,7 @@
     "source": "政府資料開放平臺 data.gov.tw",
     "sourceUrl": "https://data.gov.tw/dataset/7536",
     "records": 5638,
-    "updatedAt": "2026-04-05T19:25:56",
+    "updatedAt": "2026-04-05T23:39:18",
     "dateRange": {
       "start": "2010-10-07",
       "end": "2026-04-02"
@@ -519,6 +519,122 @@
     {
       "label": "雞蛋大運輸價近 7 日移動平均",
       "value": 31.5
+    }
+  ],
+  "seasonality": {
+    "broilerLargeMonthly": [
+      {
+        "label": "01 月",
+        "value": 29.3
+      },
+      {
+        "label": "02 月",
+        "value": 29.61
+      },
+      {
+        "label": "03 月",
+        "value": 29.73
+      },
+      {
+        "label": "04 月",
+        "value": 29.69
+      },
+      {
+        "label": "05 月",
+        "value": 30.01
+      },
+      {
+        "label": "06 月",
+        "value": 29.96
+      },
+      {
+        "label": "07 月",
+        "value": 29.89
+      },
+      {
+        "label": "08 月",
+        "value": 29.87
+      },
+      {
+        "label": "09 月",
+        "value": 29.9
+      },
+      {
+        "label": "10 月",
+        "value": 29.45
+      },
+      {
+        "label": "11 月",
+        "value": 29.0
+      },
+      {
+        "label": "12 月",
+        "value": 28.95
+      }
+    ],
+    "eggWholesaleMonthly": [
+      {
+        "label": "01 月",
+        "value": 29.91
+      },
+      {
+        "label": "02 月",
+        "value": 29.3
+      },
+      {
+        "label": "03 月",
+        "value": 31.94
+      },
+      {
+        "label": "04 月",
+        "value": 31.44
+      },
+      {
+        "label": "05 月",
+        "value": 28.9
+      },
+      {
+        "label": "06 月",
+        "value": 27.04
+      },
+      {
+        "label": "07 月",
+        "value": 27.04
+      },
+      {
+        "label": "08 月",
+        "value": 29.88
+      },
+      {
+        "label": "09 月",
+        "value": 29.78
+      },
+      {
+        "label": "10 月",
+        "value": 28.73
+      },
+      {
+        "label": "11 月",
+        "value": 28.97
+      },
+      {
+        "label": "12 月",
+        "value": 29.18
+      }
+    ]
+  },
+  "highlights": [
+    {
+      "title": "白肉雞季節高點",
+      "body": "長期平均來看，白肉雞 2.0Kg 以上在 05 月 的平均價格最高，約 30.0 元/台斤。"
+    },
+    {
+      "title": "雞蛋季節低點",
+      "body": "雞蛋大運輸價的月平均低點落在 06 月，約 27.0 元/台斤，可和供需淡旺季一起解讀。"
+    },
+    {
+      "title": "全年波動對照",
+      "body": "白肉雞月均價高低差約 1.1 元/台斤，雞蛋大運輸價高低差約 4.9 元/台斤。"
     }
   ],
   "insights": [
