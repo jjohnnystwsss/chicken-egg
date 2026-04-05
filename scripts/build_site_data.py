@@ -102,6 +102,39 @@ def span(values: list[float]) -> float:
     return round(max(values) - min(values), 2)
 
 
+def average(values: list[float]) -> float | None:
+    return round(mean(values), 2) if values else None
+
+
+def build_annual_comparison(cleaned: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    years = sorted({item["date"].year for item in cleaned})
+    recent_years = years[-6:]
+    rows: list[dict[str, Any]] = []
+
+    for year in recent_years:
+      subset = [item for item in cleaned if item["date"].year == year]
+      broiler_values = [item["broilerLarge"] for item in subset if item["broilerLarge"] is not None]
+      egg_values = [item["eggWholesale"] for item in subset if item["eggWholesale"] is not None]
+      egg_spreads = [
+        item["eggWholesale"] - item["eggFarm"]
+        for item in subset
+        if item["eggWholesale"] is not None and item["eggFarm"] is not None
+      ]
+
+      rows.append(
+        {
+          "year": year,
+          "broilerAverage": average(broiler_values),
+          "broilerRange": span(broiler_values),
+          "eggAverage": average(egg_values),
+          "eggRange": span(egg_values),
+          "eggSpreadAverage": average(egg_spreads),
+        }
+      )
+
+    return rows
+
+
 def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
     cleaned = []
     for record in records:
@@ -183,6 +216,23 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
     broiler_trough = find_trough(broiler_monthly)
     egg_peak = find_peak(egg_monthly)
     egg_trough = find_trough(egg_monthly)
+    annual_comparison = build_annual_comparison(cleaned)
+    long_term_broiler_spread = average(
+      [
+        item["broilerLarge"] - item["broilerMedium"]
+        for item in cleaned
+        if item["broilerLarge"] is not None and item["broilerMedium"] is not None
+      ]
+    )
+    long_term_egg_spread = average(
+      [
+        item["eggWholesale"] - item["eggFarm"]
+        for item in cleaned
+        if item["eggWholesale"] is not None and item["eggFarm"] is not None
+      ]
+    )
+    most_volatile_egg_year = max(annual_comparison, key=lambda item: item["eggRange"] or 0) if annual_comparison else None
+    most_volatile_broiler_year = max(annual_comparison, key=lambda item: item["broilerRange"] or 0) if annual_comparison else None
     recent_records = [
       {
         "date": item["dateLabel"],
@@ -296,6 +346,27 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
           "body": f"白肉雞月均價高低差約 {broiler_peak['value'] - broiler_trough['value']:.1f} 元/台斤，雞蛋大運輸價高低差約 {egg_peak['value'] - egg_trough['value']:.1f} 元/台斤。",
         },
       ],
+      "marketStructure": [
+        {
+          "title": "長期雞蛋價差",
+          "body": f"從全資料期間來看，雞蛋產地價與大運輸價平均價差約 {long_term_egg_spread or 0:.1f} 元/台斤。",
+        },
+        {
+          "title": "近年雞蛋波動最高年份",
+          "body": f"{most_volatile_egg_year['year']} 年的雞蛋大運輸價年內區間約 {most_volatile_egg_year['eggRange'] or 0:.1f} 元/台斤。"
+          if most_volatile_egg_year else "尚無足夠資料。",
+        },
+        {
+          "title": "長期白肉雞規格價差",
+          "body": f"白肉雞大規格與中規格的長期平均價差約 {long_term_broiler_spread or 0:.1f} 元/台斤，顯示兩規格價格多數時間相近。",
+        },
+        {
+          "title": "近年白肉雞波動最高年份",
+          "body": f"{most_volatile_broiler_year['year']} 年白肉雞 2.0Kg 以上年內區間約 {most_volatile_broiler_year['broilerRange'] or 0:.1f} 元/台斤。"
+          if most_volatile_broiler_year else "尚無足夠資料。",
+        },
+      ],
+      "annualComparison": annual_comparison,
       "insights": [
         {
           "title": "白肉雞規格價差",

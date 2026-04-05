@@ -394,6 +394,11 @@ a {
   background: var(--line);
 }
 
+.annual-table__header,
+.annual-table__row {
+  grid-template-columns: 0.8fr repeat(5, 1fr);
+}
+
 .records-table__row,
 .records-table__header {
   display: grid;

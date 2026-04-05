@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { AnnualComparisonTable } from "../components/AnnualComparisonTable";
 import { LineChart } from "../components/LineChart";
 import { MonthlyBars } from "../components/MonthlyBars";
 import { SpreadBars } from "../components/SpreadBars";
@@ -35,6 +36,10 @@ type SiteData = {
     title: string;
     body: string;
   }[];
+  marketStructure?: {
+    title: string;
+    body: string;
+  }[];
   signals?: {
     label: string;
     value: number;
@@ -43,6 +48,8 @@ type SiteData = {
   series: {
     broilerLarge: ChartPoint[];
     eggWholesale: ChartPoint[];
+    broilerSpread?: ChartPoint[];
+    eggSpread?: ChartPoint[];
   };
   seasonality?: {
     broilerLargeMonthly: {
@@ -57,6 +64,14 @@ type SiteData = {
   spreads: {
     label: string;
     value: number;
+  }[];
+  annualComparison?: {
+    year: number;
+    broilerAverage: number | null;
+    broilerRange: number | null;
+    eggAverage: number | null;
+    eggRange: number | null;
+    eggSpreadAverage: number | null;
   }[];
   recentRecords?: {
     date: string;
@@ -159,6 +174,8 @@ export default async function HomePage() {
   ];
   const signalCards = siteData.signals ?? [];
   const recentRecords = [...(siteData.recentRecords ?? [])].reverse();
+  const marketStructure = siteData.marketStructure ?? [];
+  const annualComparison = siteData.annualComparison ?? [];
 
   return (
     <main className="page-shell">
@@ -260,6 +277,38 @@ export default async function HomePage() {
 
       <section className="section section--alt">
         <div className="section-heading">
+          <p className="eyebrow">Spread Analysis</p>
+          <h2>把價差單獨拉出來看，會比只看價格本身更容易讀出市場結構</h2>
+          <p className="section-copy">
+            這裡把白肉雞規格價差與雞蛋上下游價差分開畫，讓市場結構與價格傳導的變化更直觀。
+          </p>
+        </div>
+        <div className="charts-grid">
+          <LineChart
+            title="Broiler Spread"
+            subtitle="白肉雞大規格與中規格價差"
+            color="#cc5a2f"
+            data={siteData.series.broilerSpread ?? []}
+          />
+          <LineChart
+            title="Egg Spread"
+            subtitle="雞蛋產地價與大運輸價價差"
+            color="#257179"
+            data={siteData.series.eggSpread ?? []}
+          />
+          <div className="story-grid story-grid--full">
+            {marketStructure.map((item) => (
+              <article key={item.title} className="story-card">
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--alt">
+        <div className="section-heading">
           <p className="eyebrow">What The Data Says</p>
           <h2>從這批資料先看到的訊號</h2>
         </div>
@@ -336,6 +385,17 @@ export default async function HomePage() {
             ))}
           </div>
         </div>
+      </section>
+
+      <section className="section">
+        <div className="section-heading">
+          <p className="eyebrow">Annual Comparison</p>
+          <h2>把近幾年拆開來看，才能知道近期變化是短期波動還是結構轉變</h2>
+          <p className="section-copy">
+            這張表把最近 6 年的年均價、年內區間與雞蛋平均價差放在一起，方便比較年度差異。
+          </p>
+        </div>
+        <AnnualComparisonTable rows={annualComparison} />
       </section>
 
       <section className="section section--alt">
