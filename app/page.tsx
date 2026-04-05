@@ -35,6 +35,11 @@ type SiteData = {
     title: string;
     body: string;
   }[];
+  signals?: {
+    label: string;
+    value: number;
+    suffix: string;
+  }[];
   series: {
     broilerLarge: ChartPoint[];
     eggWholesale: ChartPoint[];
@@ -52,6 +57,14 @@ type SiteData = {
   spreads: {
     label: string;
     value: number;
+  }[];
+  recentRecords?: {
+    date: string;
+    lunar: string;
+    broilerLarge: number | null;
+    broilerMedium: number | null;
+    eggFarm: number | null;
+    eggWholesale: number | null;
   }[];
 };
 
@@ -82,6 +95,14 @@ function formatValue(value?: number | null) {
   }
 
   return `${value.toFixed(1)} 元/台斤`;
+}
+
+function formatCompactNumber(value?: number | null, suffix = "") {
+  if (value === undefined || value === null) {
+    return "-";
+  }
+
+  return `${value >= 0 ? "+" : ""}${value.toFixed(1)}${suffix ? ` ${suffix}` : ""}`;
 }
 
 function getTrendSummary(series: ChartPoint[]) {
@@ -136,6 +157,8 @@ export default async function HomePage() {
       note: `近 30 日 ${eggTrend.direction} ${eggTrend.delta >= 0 ? "+" : ""}${eggTrend.delta.toFixed(1)}`,
     },
   ];
+  const signalCards = siteData.signals ?? [];
+  const recentRecords = [...(siteData.recentRecords ?? [])].reverse();
 
   return (
     <main className="page-shell">
@@ -265,6 +288,24 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="section">
+        <div className="section-heading">
+          <p className="eyebrow">Recent Signals</p>
+          <h2>如果用分析師視角來看，近期最值得先盯的是這 4 個訊號</h2>
+          <p className="section-copy">
+            這些指標把最近 7 天與最近 30 天壓縮成可快速閱讀的變化量，讓使用者不用先解讀完整圖表也能掌握狀況。
+          </p>
+        </div>
+        <div className="signal-grid">
+          {signalCards.map((item) => (
+            <article key={item.label} className="signal-card">
+              <span>{item.label}</span>
+              <strong>{formatCompactNumber(item.value, item.suffix)}</strong>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section" id="seasonality">
         <div className="section-heading">
           <p className="eyebrow">Seasonality Preview</p>
@@ -292,6 +333,38 @@ export default async function HomePage() {
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
               </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--alt">
+        <div className="section-heading">
+          <p className="eyebrow">Latest Records</p>
+          <h2>最近 7 日原始行情</h2>
+          <p className="section-copy">
+            這一區保留原始數值，讓前面的圖表與文字敘事可以被快速對照，也更像一個可查證的資料作品。
+          </p>
+        </div>
+        <div className="table-card">
+          <div className="records-table">
+            <div className="records-table__header">
+              <div className="records-table__head">日期</div>
+              <div className="records-table__head">農曆</div>
+              <div className="records-table__head">白肉雞 2.0Kg+</div>
+              <div className="records-table__head">白肉雞 1.75-1.95Kg</div>
+              <div className="records-table__head">雞蛋產地價</div>
+              <div className="records-table__head">雞蛋大運輸價</div>
+            </div>
+            {recentRecords.map((item) => (
+              <div key={item.date} className="records-table__row">
+                <div className="records-table__cell">{item.date}</div>
+                <div className="records-table__cell">{item.lunar}</div>
+                <div className="records-table__cell">{item.broilerLarge?.toFixed(1) ?? "-"}</div>
+                <div className="records-table__cell">{item.broilerMedium?.toFixed(1) ?? "-"}</div>
+                <div className="records-table__cell">{item.eggFarm?.toFixed(1) ?? "-"}</div>
+                <div className="records-table__cell">{item.eggWholesale?.toFixed(1) ?? "-"}</div>
+              </div>
             ))}
           </div>
         </div>

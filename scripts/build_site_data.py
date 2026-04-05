@@ -90,6 +90,18 @@ def find_trough(items: list[dict[str, Any]]) -> dict[str, Any]:
     return min(positives, key=lambda item: item["value"])
 
 
+def difference(series: list[float], days: int) -> float:
+    if len(series) <= days:
+      return 0.0
+    return round(series[-1] - series[-days - 1], 2)
+
+
+def span(values: list[float]) -> float:
+    if not values:
+      return 0.0
+    return round(max(values) - min(values), 2)
+
+
 def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
     cleaned = []
     for record in records:
@@ -171,6 +183,17 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
     broiler_trough = find_trough(broiler_monthly)
     egg_peak = find_peak(egg_monthly)
     egg_trough = find_trough(egg_monthly)
+    recent_records = [
+      {
+        "date": item["dateLabel"],
+        "lunar": item["lunar"],
+        "broilerLarge": item["broilerLarge"],
+        "broilerMedium": item["broilerMedium"],
+        "eggFarm": item["eggFarm"],
+        "eggWholesale": item["eggWholesale"],
+      }
+      for item in cleaned[-7:]
+    ]
 
     payload = {
       "meta": {
@@ -191,6 +214,28 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
         "eggFarm": egg_farm_values[-1] if egg_farm_values else None,
         "eggWholesale": egg_wholesale_values[-1] if egg_wholesale_values else None,
       },
+      "signals": [
+        {
+          "label": "白肉雞近 7 日變化",
+          "value": difference(broiler_large_values, 6),
+          "suffix": "元/台斤",
+        },
+        {
+          "label": "雞蛋大運輸價近 7 日變化",
+          "value": difference(egg_wholesale_values, 6),
+          "suffix": "元/台斤",
+        },
+        {
+          "label": "白肉雞近 30 日波動區間",
+          "value": span(broiler_large_values),
+          "suffix": "元/台斤",
+        },
+        {
+          "label": "雞蛋近 30 日波動區間",
+          "value": span(egg_wholesale_values),
+          "suffix": "元/台斤",
+        },
+      ],
       "series": {
         "broilerLarge": [
           {"date": item["dateLabel"][5:], "value": item["broilerLarge"]}
@@ -277,6 +322,7 @@ def build_payload(records: list[dict[str, Any]]) -> dict[str, Any]:
         }
         for item in cleaned
       ],
+      "recentRecords": recent_records,
     }
 
     return payload

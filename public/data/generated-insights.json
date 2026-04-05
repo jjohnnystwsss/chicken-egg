@@ -4,7 +4,7 @@
     "source": "政府資料開放平臺 data.gov.tw",
     "sourceUrl": "https://data.gov.tw/dataset/7536",
     "records": 5638,
-    "updatedAt": "2026-04-05T23:39:18",
+    "updatedAt": "2026-04-05T23:46:43",
     "dateRange": {
       "start": "2010-10-07",
       "end": "2026-04-02"
@@ -17,6 +17,28 @@
     "eggFarm": 28.5,
     "eggWholesale": 31.5
   },
+  "signals": [
+    {
+      "label": "白肉雞近 7 日變化",
+      "value": 0.0,
+      "suffix": "元/台斤"
+    },
+    {
+      "label": "雞蛋大運輸價近 7 日變化",
+      "value": 0.0,
+      "suffix": "元/台斤"
+    },
+    {
+      "label": "白肉雞近 30 日波動區間",
+      "value": 0.5,
+      "suffix": "元/台斤"
+    },
+    {
+      "label": "雞蛋近 30 日波動區間",
+      "value": 6.0,
+      "suffix": "元/台斤"
+    }
+  ],
   "series": {
     "broilerLarge": [
       {
@@ -51391,6 +51413,64 @@
       "broilerLarge": 33.5,
       "broilerMedium": 33.5,
       "broilerRetail": 35.0,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    }
+  ],
+  "recentRecords": [
+    {
+      "date": "2026-03-27",
+      "lunar": "初九",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-03-28",
+      "lunar": "初十",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-03-29",
+      "lunar": "十一",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-03-30",
+      "lunar": "十二",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-03-31",
+      "lunar": "十三",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-04-01",
+      "lunar": "十四",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
+      "eggFarm": 28.5,
+      "eggWholesale": 31.5
+    },
+    {
+      "date": "2026-04-02",
+      "lunar": "十五",
+      "broilerLarge": 33.5,
+      "broilerMedium": 33.5,
       "eggFarm": 28.5,
       "eggWholesale": 31.5
     }
