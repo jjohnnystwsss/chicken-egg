@@ -106,6 +106,41 @@ a {
   font-size: 1.08rem;
 }
 
+.hero__latest {
+  margin-top: 24px;
+  padding: 16px 18px;
+  border-radius: 20px;
+  background: rgba(255, 249, 241, 0.8);
+  border: 1px solid var(--line);
+}
+
+.hero__latest span,
+.snapshot-card span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.hero__latest strong,
+.snapshot-card strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.6rem;
+}
+
+.hero__latest p,
+.section-copy,
+.snapshot-card p,
+.story-card p,
+.source-link {
+  color: var(--muted);
+}
+
+.hero__latest p {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+
 .hero__actions {
   display: flex;
   gap: 12px;
@@ -131,6 +166,14 @@ a {
 .button--ghost {
   border: 1px solid var(--line);
   color: var(--accent-deep);
+}
+
+.source-link {
+  display: inline-flex;
+  margin-top: 18px;
+  font-size: 0.96rem;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .stat-list {
@@ -166,6 +209,12 @@ a {
   margin-bottom: 22px;
 }
 
+.section-copy {
+  margin: 14px 0 0;
+  max-width: 64ch;
+  line-height: 1.7;
+}
+
 .section h2 {
   font-size: clamp(1.8rem, 3vw, 3rem);
   max-width: 18ch;
@@ -193,7 +242,9 @@ a {
 .insight-card,
 .chart-card,
 .bars-card,
-.next-card {
+.next-card,
+.snapshot-card,
+.story-card {
   border-radius: 22px;
   padding: 22px;
 }
@@ -268,6 +319,38 @@ a {
   gap: 24px;
 }
 
+.snapshot-grid,
+.story-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.snapshot-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.snapshot-card,
+.story-card {
+  background: rgba(255, 250, 242, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  box-shadow: var(--shadow);
+}
+
+.snapshot-card p,
+.story-card p {
+  margin: 10px 0 0;
+  line-height: 1.65;
+}
+
+.story-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.story-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
 .workflow__diagram {
   display: grid;
   gap: 14px;
@@ -335,7 +418,9 @@ a {
   .workflow,
   .insight-grid,
   .next-grid,
-  .charts-grid {
+  .charts-grid,
+  .snapshot-grid,
+  .story-grid {
     grid-template-columns: 1fr;
   }
 
